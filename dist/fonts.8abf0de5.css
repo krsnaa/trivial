@@ -1,0 +1,161 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+@font-face {
+  font-weight: normal;
+  font-family: "Computer Modern Bright";
+  font-style: normal;
+  src: url("/bright-regular.8df7c519.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: normal;
+  font-family: "Computer Modern Bright";
+  font-style: italic;
+  src: url("/bright-italic.c7c35f90.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: 600;
+  font-family: "Computer Modern Bright";
+  font-style: normal;
+  src: url("/bright-semi.411436f5.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: 600;
+  font-family: "Computer Modern Bright";
+  font-style: italic;
+  src: url("/bright-semiitalic.56c60aa2.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: "Computer Modern Bright";
+  font-style: normal;
+  src: url("/bright-bold.19ef5536.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: "Computer Modern Bright";
+  font-style: italic;
+  src: url("/bright-bolditalic.087a5e62.woff2") format("woff2");
+}
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+@font-face {
+  font-weight: normal;
+  font-family: "Latin Modern Sans";
+  font-style: normal;
+  src: url("/sans-regular.09287920.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: normal;
+  font-family: "Latin Modern Sans";
+  font-style: italic;
+  src: url("/sans-italic.8dc4fd81.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: "Latin Modern Sans";
+  font-style: normal;
+  src: url("/sans-bold.25a1d628.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: "Latin Modern Sans";
+  font-style: italic;
+  src: url("/sans-bolditalic.a323adb2.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: normal;
+  font-family: "Latin Modern Sans Demi-Condensed";
+  font-style: normal;
+  src: url("/sans-demi.5bb52b95.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: normal;
+  font-family: "Latin Modern Sans Demi-Condensed";
+  font-style: italic;
+  src: url("/sans-demiitalic.387893a7.woff2") format("woff2");
+}
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+@font-face {
+  font-weight: normal;
+  font-family: "Fira Mono";
+  font-style: normal;
+  src: url("/fira-regular.5b44d8db.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: 500;
+  font-family: "Fira Mono";
+  font-style: normal;
+  src: url("/fira-italic.956de0cd.ttf") format("ttf");
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: "Fira Mono";
+  font-style: normal;
+  src: url("/fira-bold.bf94e65b.woff2") format("woff2");
+}
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+@font-face {
+  font-weight: normal;
+  font-family: "TeX Gyre Pagella";
+  font-style: normal;
+  src: url("/pagella-regular.90865fd3.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: normal;
+  font-family: "TeX Gyre Pagella";
+  font-style: italic;
+  src: url("/pagella-italic.b55130ad.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: "TeX Gyre Pagella";
+  font-style: normal;
+  src: url("/pagella-bold.bb037bbe.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: "TeX Gyre Pagella";
+  font-style: italic;
+  src: url("/pagella-bolditalic.653d491d.woff2") format("woff2");
+}
+
+@font-face {
+  font-weight: 600;
+  font-family: "Inter";
+  font-style: normal;
+  src: url("/inter-semi.8213da0f.woff2?v=3.19") format("woff2");
+}
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+/* Import fonts */
+/**/
+
+
+/*# sourceMappingURL=/fonts.8abf0de5.css.map */

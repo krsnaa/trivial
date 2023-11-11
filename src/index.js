@@ -4,12 +4,15 @@
 (() => {
   let allPages = [];
   let allProblems = [];
-  $.getJSON("/data/allpages.json", (json) => {
+  $.getJSON("https://amctrivial.com/data/allpages.json", (json) => {
+    console.log("getJson allpages");
     allPages = json;
   });
-  $.getJSON("/data/allproblems.json", (json) => {
+  $.getJSON("https://amctrivial.com/data/allproblems.json", (json) => {
+    console.log("getJson allproblems");
     allProblems = json;
   });
+
   let categoryPages = [];
   let theoremPages = [];
   let testsList = `AMC 8, AMC 10, AMC 12, AIME, USAJMO, USAMO, IMO, AJHSME, AHSME`;
@@ -72,6 +75,7 @@
     { value: "Olympiad Trigonometry Problems", shortName: "Oly Trig" },
   ];
   function subjectTag(tagData) {
+    console.log("subjectTag:", tagData);
     return `<tag title="${tagData.value}" contenteditable="false" spellcheck="false" tabindex="-1" class="tagify__tag " value="${tagData.value}">
       <x title="" class="tagify__tag__removeBtn" role="button" aria-label="remove tag"></x>
       <div>
@@ -250,8 +254,7 @@
       document.body.removeAttribute("style");
       document.querySelector(".page-container").removeAttribute("style");
       if (JSON.parse(localStorage.getItem("darkTheme"))) {
-        if (!window.matchMedia("(prefers-color-scheme: dark)").matches)
-          $("#dark-stylesheet-link").remove();
+        if (!window.matchMedia("(prefers-color-scheme: dark)").matches) $("#dark-stylesheet-link").remove();
 
         localStorage.removeItem("darkTheme");
         $("meta[name='color-scheme']").attr("content", "light dark");
@@ -263,9 +266,7 @@
         $("meta[name='color-scheme']").attr("content", "light");
         $("#dark-toggle").text("Light theme");
       } else {
-        $("#stylesheet-link").after(
-          `<link id="dark-stylesheet-link" href="/src/dark.css" rel="stylesheet" />`
-        );
+        $("#stylesheet-link").after(`<link id="dark-stylesheet-link" href="/src/dark.css" rel="stylesheet" />`);
 
         localStorage.setItem("darkTheme", true);
         $("meta[name='color-scheme']").attr("content", "dark");
@@ -284,6 +285,7 @@
 
   // Adds things
   async function addProblem(pagename, pushUrl) {
+    console.log("addProblem:", pagename, pushUrl);
     $(".notes").before(
       `<div class="problem-section" id="problem-section">
       <h2 class="section-header" id="article-header"></h2>
@@ -308,10 +310,7 @@
       $("#counter-toggle").text("Counters off");
     }
 
-    localStorage.setItem(
-      "numProblems",
-      JSON.parse(localStorage.getItem("numProblems")) + 1
-    );
+    localStorage.setItem("numProblems", JSON.parse(localStorage.getItem("numProblems")) + 1);
 
     let apiEndpoint = "https://artofproblemsolving.com/wiki/api.php";
     let params = `action=parse&page=${pagename}&format=json`;
@@ -329,12 +328,8 @@
       } else if (problemText.includes("Redirect to:")) {
         console.log("Redirect problem, going there instead...");
 
-        let redirHref = $($.parseHTML(problemText))
-          .find(".redirectText a")
-          .attr("href");
-        let redirPage = redirHref
-          .replace("/wiki/index.php/", "")
-          .replace(/_/g, " ");
+        let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+        let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
         console.log(redirPage);
 
         params = `action=parse&page=${redirPage}&format=json`;
@@ -363,12 +358,7 @@
         lastParam = searchParams.get("page");
       }
 
-      $(".aops-link").attr(
-        "href",
-        `https://artofproblemsolving.com/wiki/index.php/${underscores(
-          finalPage
-        )}`
-      );
+      $(".aops-link").attr("href", `https://artofproblemsolving.com/wiki/index.php/${underscores(finalPage)}`);
       katexFallback();
       customText();
       fixLinks();
@@ -393,17 +383,14 @@
             `<span id="wrong-num">0</span> incorrect</div>
         </div>`
         );
-        if ($("#random-input").length)
-          $("#random-input").after($(".practice-progress"));
+        if ($("#random-input").length) $("#random-input").after($(".practice-progress"));
       }
 
       $(".answer-check").remove();
       await addAnswer(pagename.replace(/_/g, " "));
       return problemProblem && problemSolutions;
     } else {
-      $(".article-text").before(
-        `<p class="error">The page you specified does not exist.</p>`
-      );
+      $(".article-text").before(`<p class="error">The page you specified does not exist.</p>`);
       $(".article-text").remove();
       $("#article-header").html("Error");
       $(".section-options").remove();
@@ -412,6 +399,7 @@
   }
 
   function addSearch() {
+    console.log("addSearch");
     $(".notes").before(
       `<div class="results-container">
       <span class="results-notice"></span>
@@ -420,6 +408,7 @@
   }
 
   function addHistoryContainer() {
+    console.log("addHistoryContainer");
     $(".notes").before(
       `<div class="results-container">
       <button class="text-button" id="clear-history">(Clear history)</button>
@@ -428,12 +417,14 @@
   }
 
   function addBatch() {
+    console.log("addBatch");
     $(".notes").before(
       `<div class="problem-section">
-      <h2 class="section-header" id="batch-header">Problem Set - ${new Date().toLocaleString(
-        "en-UK",
-        { year: "numeric", month: "short", day: "numeric" }
-      )}</h2>
+      <h2 class="section-header" id="batch-header">Problem Set - ${new Date().toLocaleString("en-UK", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })}</h2>
       <div class="article-text" id="batch-text"></div>
     </div>
     <div class="problem-section section-collapsed" id="solutions-section">
@@ -447,13 +438,11 @@
       $("#counter-toggle").text("Counters off");
     }
 
-    localStorage.setItem(
-      "numSets",
-      JSON.parse(localStorage.getItem("numSets")) + 1
-    );
+    localStorage.setItem("numSets", JSON.parse(localStorage.getItem("numSets")) + 1);
   }
 
   function addUrlBatch() {
+    console.log("addUrlBatch");
     $(".notes").before(
       `<div class="options-input" id="problems-input">
         <input class="input-field" id="input-problems"
@@ -466,10 +455,11 @@
         </button>
       </div>${moreOptions}
       <div class="problem-section">
-        <h2 class="section-header" id="batch-header">Problem Set - ${new Date().toLocaleString(
-          "en-UK",
-          { year: "numeric", month: "short", day: "numeric" }
-        )}</h2>
+        <h2 class="section-header" id="batch-header">Problem Set - ${new Date().toLocaleString("en-UK", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })}</h2>
         <div class="article-text" id="batch-text"></div>
       </div>
       <div class="problem-section section-collapsed" id="solutions-section">
@@ -483,13 +473,12 @@
       $("#counter-toggle").text("Counters off");
     }
 
-    localStorage.setItem(
-      "numSets",
-      JSON.parse(localStorage.getItem("numSets")) + 1
-    );
+    localStorage.setItem("numSets", JSON.parse(localStorage.getItem("numSets")) + 1);
   }
 
   async function addArticle(pagename, pushUrl) {
+    console.log("addArticle:", pagename, pushUrl);
+
     $(".error").remove();
     $(".problem-section").remove();
     $(".display-settings").remove();
@@ -513,10 +502,7 @@
       $("#counter-toggle").text("Counters off");
     }
 
-    localStorage.setItem(
-      "numArticles",
-      JSON.parse(localStorage.getItem("numArticles")) + 1
-    );
+    localStorage.setItem("numArticles", JSON.parse(localStorage.getItem("numArticles")) + 1);
 
     let apiEndpoint = "https://artofproblemsolving.com/wiki/api.php";
     let params = `action=parse&page=${pagename}&format=json`;
@@ -530,12 +516,8 @@
       if (problemText.includes("Redirect to:")) {
         console.log("Redirect page, going there instead...");
 
-        let redirHref = $($.parseHTML(problemText))
-          .find(".redirectText a")
-          .attr("href");
-        let redirPage = redirHref
-          .replace("/wiki/index.php/", "")
-          .replace(/_/g, " ");
+        let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+        let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
         console.log(redirPage);
         pagename = redirPage;
 
@@ -572,17 +554,10 @@
         lastParam = searchParams.get("page");
       }
 
-      $(".aops-link").attr(
-        "href",
-        `https://artofproblemsolving.com/wiki/index.php/${underscores(
-          pagename
-        )}`
-      );
+      $(".aops-link").attr("href", `https://artofproblemsolving.com/wiki/index.php/${underscores(pagename)}`);
       katexFallback();
     } else {
-      $(".article-text").before(
-        `<p class="error">The page you specified does not exist.</p>`
-      );
+      $(".article-text").before(`<p class="error">The page you specified does not exist.</p>`);
       $(".article-text").remove();
       $("#article-header").html("Error");
       $(".section-options").remove();
@@ -594,11 +569,11 @@
   }
 
   async function fillBatch(pagenames, pushUrl, testYear, testName) {
+    console.log("fillBatch:", pagenames, pushUrl, testYear, testName);
+
     async function makeBatch() {
       let problems = [];
-      let problemTitles = pagenames
-        .split("|")
-        .map((e) => e.replace(/_/g, " ").replace("#", "Problems/Problem "));
+      let problemTitles = pagenames.split("|").map((e) => e.replace(/_/g, " ").replace("#", "Problems/Problem "));
       let redirList = [];
       let redirIndex = [];
       let numProblems = problemTitles.length;
@@ -615,17 +590,11 @@
         </div>`
       );
 
-      let paramsList = problemTitles.map(
-        (currentProblem) => `action=parse&page=${currentProblem}&format=json`
-      );
+      let paramsList = problemTitles.map((currentProblem) => `action=parse&page=${currentProblem}&format=json`);
       console.log(paramsList);
-      let responseList = await Promise.all(
-        paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-      );
+      let responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
       console.log(responseList);
-      let jsonList = await Promise.all(
-        responseList.map((response) => response.json())
-      );
+      let jsonList = await Promise.all(responseList.map((response) => response.json()));
       console.log(jsonList);
 
       for (let [index, currentProblem] of problemTitles.entries()) {
@@ -645,27 +614,17 @@
             solutions: problemSolutions,
           });
 
-          $(".loading-bar").css(
-            "width",
-            `${((problems.length + invalidProblems) / numProblems) * 100}%`
-          );
+          $(".loading-bar").css("width", `${((problems.length + invalidProblems) / numProblems) * 100}%`);
         } else if (problemText.includes("Redirect to:")) {
           console.log("Redirect problem, going there instead...");
 
-          let redirHref = $($.parseHTML(problemText))
-            .find(".redirectText a")
-            .attr("href");
-          let redirPage = redirHref
-            .replace("/wiki/index.php/", "")
-            .replace(/_/g, " ");
+          let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+          let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
           console.log(redirPage);
           redirList.push(redirPage);
           redirIndex.push(index);
 
-          $(".loading-bar").css(
-            "width",
-            `${((problems.length + invalidProblems) / numProblems) * 100}%`
-          );
+          $(".loading-bar").css("width", `${((problems.length + invalidProblems) / numProblems) * 100}%`);
         } else {
           console.log("Invalid problem, skipping...");
           invalidProblems++;
@@ -673,17 +632,11 @@
       }
 
       if (redirList[0]) {
-        paramsList = redirList.map(
-          (redirPage) => `action=parse&page=${redirPage}&format=json`
-        );
+        paramsList = redirList.map((redirPage) => `action=parse&page=${redirPage}&format=json`);
         console.log(paramsList);
-        responseList = await Promise.all(
-          paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-        );
+        responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
         console.log(responseList);
-        jsonList = await Promise.all(
-          responseList.map((response) => response.json())
-        );
+        jsonList = await Promise.all(responseList.map((response) => response.json()));
         console.log(jsonList);
 
         for (let [index, currentProblem] of redirList.entries()) {
@@ -726,9 +679,7 @@
             ...(testName ? { testyear: testYear, testname: testName } : {}),
           },
           "Problem Set - Trivial Math Practice",
-          "?problems=" +
-            pagenames +
-            (testYear ? `&testyear=${testYear}&testname=${testName}` : ``)
+          "?problems=" + pagenames + (testYear ? `&testyear=${testYear}&testname=${testName}` : ``)
         );
         searchParams = new URLSearchParams(location.search);
         lastParam = searchParams.get("problems");
@@ -751,9 +702,7 @@
       hideLinks();
       breakSets();
       addBatchAnswers(
-        pagenames
-          .split("|")
-          .map((e) => e.replace(/_/g, " ").replace("#", "Problems/Problem ")),
+        pagenames.split("|").map((e) => e.replace(/_/g, " ").replace("#", "Problems/Problem ")),
         testName,
         testYear
       );
@@ -761,6 +710,8 @@
   }
 
   async function addAnswer(pagename) {
+    console.log("addAnswer:", pagename);
+
     clickedTimes++;
     answerTimes++;
     let clickedTimesThen = clickedTimes;
@@ -796,35 +747,24 @@
           originalAnswer = originalAnswer.toUpperCase();
           let finalAnswer = originalAnswer;
           if (finalAnswer) {
-            if (computeTest(pagename) === "AIME")
-              finalAnswer = originalAnswer.padStart(3, "0");
+            if (computeTest(pagename) === "AIME") finalAnswer = originalAnswer.padStart(3, "0");
             answerTries++;
 
             if (answerTries == 1) {
-              localStorage.setItem(
-                "numToday",
-                JSON.parse(localStorage.getItem("numToday")) + 1
-              );
-              localStorage.setItem(
-                "numAnswered",
-                JSON.parse(localStorage.getItem("numAnswered")) + 1
-              );
+              localStorage.setItem("numToday", JSON.parse(localStorage.getItem("numToday")) + 1);
+              localStorage.setItem("numAnswered", JSON.parse(localStorage.getItem("numAnswered")) + 1);
             }
             if (
               finalAnswer === answer ||
-              (pagename === "2012 AMC 12B Problems/Problem 12" &&
-                (finalAnswer === "D" || finalAnswer === "E")) ||
-              (pagename === "2015 AMC 10A Problems/Problem 20" &&
-                finalAnswer === "B") ||
-              (pagename === "2022 AIME II Problems/Problem 8" &&
-                (finalAnswer === "080" || finalAnswer === "081"))
+              (pagename === "2012 AMC 12B Problems/Problem 12" && (finalAnswer === "D" || finalAnswer === "E")) ||
+              (pagename === "2015 AMC 10A Problems/Problem 20" && finalAnswer === "B") ||
+              (pagename === "2022 AIME II Problems/Problem 8" && (finalAnswer === "080" || finalAnswer === "081"))
             ) {
               $("#input-answer").removeClass("glow");
               void document.getElementById("input-answer").offsetWidth;
               $("#input-answer").addClass("glow");
 
-              $(".answer-feedback")
-                .prepend(`<div class="feedback-item correct-feedback">
+              $(".answer-feedback").prepend(`<div class="feedback-item correct-feedback">
                   ${originalAnswer} is correct! :)
                 </div>`);
               if (!progressUpdated) {
@@ -832,46 +772,26 @@
                 progressUpdated = true;
                 if (answerTries == 1) {
                   streakCount++;
-                  if (
-                    streakCount > JSON.parse(localStorage.getItem("numStreak"))
-                  )
+                  if (streakCount > JSON.parse(localStorage.getItem("numStreak")))
                     localStorage.setItem("numStreak", streakCount);
 
                   $(".streak-bar").removeClass("bar-hidden");
                   $(".question-bar.right-questions").removeClass("bar-hidden");
                   $(".question-bar.right-questions").css(
                     "flex-grow",
-                    parseInt(
-                      $(".question-bar.right-questions").css("flex-grow")
-                    ) + 1
+                    parseInt($(".question-bar.right-questions").css("flex-grow")) + 1
                   );
-                  $("#right-num").text(
-                    parseInt(
-                      $(".question-bar.right-questions").css("flex-grow")
-                    )
-                  );
-                  localStorage.setItem(
-                    "numCorrect",
-                    JSON.parse(localStorage.getItem("numCorrect")) + 1
-                  );
+                  $("#right-num").text(parseInt($(".question-bar.right-questions").css("flex-grow")));
+                  localStorage.setItem("numCorrect", JSON.parse(localStorage.getItem("numCorrect")) + 1);
                 } else {
                   $(".streak-bar").removeClass("bar-hidden");
                   $(".question-bar.retry-questions").removeClass("bar-hidden");
                   $(".question-bar.retry-questions").css(
                     "flex-grow",
-                    parseInt(
-                      $(".question-bar.retry-questions").css("flex-grow")
-                    ) + 1
+                    parseInt($(".question-bar.retry-questions").css("flex-grow")) + 1
                   );
-                  $("#retry-num").text(
-                    parseInt(
-                      $(".question-bar.retry-questions").css("flex-grow")
-                    )
-                  );
-                  localStorage.setItem(
-                    "numRetry",
-                    JSON.parse(localStorage.getItem("numRetry")) + 1
-                  );
+                  $("#retry-num").text(parseInt($(".question-bar.retry-questions").css("flex-grow")));
+                  localStorage.setItem("numRetry", JSON.parse(localStorage.getItem("numRetry")) + 1);
                 }
                 $("#solutions-header").click();
               }
@@ -882,8 +802,7 @@
               void document.getElementById("input-answer").offsetWidth;
               $("#input-answer").addClass("shake");
 
-              $(".answer-feedback")
-                .prepend(`<div class="feedback-item wrong-feedback">
+              $(".answer-feedback").prepend(`<div class="feedback-item wrong-feedback">
               ${originalAnswer} is wrong :(
               </div>`);
             }
@@ -896,28 +815,22 @@
   }
 
   async function addBatchAnswers(pagenames, testName, testYear) {
+    console.log("addBatchAnswers:", pagenames, testName, testYear);
+
     clickedTimes++;
     let clickedTimesThen = clickedTimes;
 
     let apiEndpoint = "https://artofproblemsolving.com/wiki/api.php";
 
-    let testsList = pagenames.map(
-      (pagename) => pagename?.split(" Problems/Problem")[0]
-    );
+    let testsList = pagenames.map((pagename) => pagename?.split(" Problems/Problem")[0]);
     let uniqueTests = [...new Set(testsList)];
     console.log(uniqueTests);
-    let paramsList = uniqueTests.map(
-      (test) => `action=parse&page=${test} Answer Key&format=json`
-    );
+    let paramsList = uniqueTests.map((test) => `action=parse&page=${test} Answer Key&format=json`);
 
-    let responseList = await Promise.all(
-      paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-    );
+    let responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
     console.log(responseList);
 
-    let jsonList = await Promise.all(
-      responseList.map((response) => response.json())
-    );
+    let jsonList = await Promise.all(responseList.map((response) => response.json()));
     console.log(jsonList);
     let jsonDict = jsonList.reduce((jsonDict, json, index) => {
       return { ...jsonDict, [uniqueTests[index]]: json };
@@ -994,19 +907,14 @@
     $("#batchans-button").click(async () => {
       $(".feedback-item").remove();
 
-      if ($("#score-only").prop("checked"))
-        $("#batchans-section").addClass("batchans-scoreonly");
-      else if ($("#check-only").prop("checked"))
-        $("#batchans-section").addClass("batchans-checkonly");
+      if ($("#score-only").prop("checked")) $("#batchans-section").addClass("batchans-scoreonly");
+      else if ($("#check-only").prop("checked")) $("#batchans-section").addClass("batchans-checkonly");
       else $("#batchans-section").addClass("batchans-showans");
 
-      if ($("#input-amc").prop("checked"))
-        $("#batchans-section").addClass("batchans-amcscore");
+      if ($("#input-amc").prop("checked")) $("#batchans-section").addClass("batchans-amcscore");
 
       $("input[type=radio][name=input-feedback]").change(function () {
-        $("#batchans-section").removeClass(
-          "batchans-scoreonly batchans-checkonly batchans-showans"
-        );
+        $("#batchans-section").removeClass("batchans-scoreonly batchans-checkonly batchans-showans");
         console.log(this.value);
         switch (this.value) {
           case "score-only":
@@ -1034,20 +942,14 @@
         let finalAnswer = originalAnswer;
         if (finalAnswer) {
           let pagename = $(this).attr("pagename");
-          if (computeTest(pagename) === "AIME")
-            finalAnswer = originalAnswer.padStart(3, "0");
+          if (computeTest(pagename) === "AIME") finalAnswer = originalAnswer.padStart(3, "0");
           if (
             finalAnswer === $(this).attr("answer") ||
-            (pagename === "2012 AMC 12B Problems/Problem 12" &&
-              (finalAnswer === "D" || finalAnswer === "E")) ||
-            (pagename === "2015 AMC 10A Problems/Problem 20" &&
-              finalAnswer === "B") ||
-            (pagename === "2022 AIME II Problems/Problem 8" &&
-              (finalAnswer === "080" || finalAnswer === "081"))
+            (pagename === "2012 AMC 12B Problems/Problem 12" && (finalAnswer === "D" || finalAnswer === "E")) ||
+            (pagename === "2015 AMC 10A Problems/Problem 20" && finalAnswer === "B") ||
+            (pagename === "2022 AIME II Problems/Problem 8" && (finalAnswer === "080" || finalAnswer === "081"))
           ) {
-            $(this).append(
-              `<span class="feedback-item correct-feedback"><span class="feedback-icon">✓</span></span>`
-            );
+            $(this).append(`<span class="feedback-item correct-feedback"><span class="feedback-icon">✓</span></span>`);
             rightAnswers++;
           } else {
             $(this).append(
@@ -1078,21 +980,9 @@
             </div>`
         );
       $("#number-score").text(`Correct: ${rightAnswers}/${totalAnswers}`);
-      $("#amc-score").html(
-        `<span class="score-num">Score: ${
-          rightAnswers * 6 + blankAnswers * 1.5
-        }</span>`
-      );
+      $("#amc-score").html(`<span class="score-num">Score: ${rightAnswers * 6 + blankAnswers * 1.5}</span>`);
 
-      let statTests = [
-        "AMC 8",
-        "AMC 10A",
-        "AMC 10B",
-        "AMC 12A",
-        "AMC 12B",
-        "AIME I",
-        "AIME II",
-      ];
+      let statTests = ["AMC 8", "AMC 10A", "AMC 10B", "AMC 12A", "AMC 12B", "AIME I", "AIME II"];
       if (testName && statTests.includes(testName)) {
         let apiEndpoint = "https://artofproblemsolving.com/wiki/api.php";
         let params = `action=parse&page=AMC_historical_results&format=json`;
@@ -1109,22 +999,14 @@
           .eq(0)
           .children()
           .each(function () {
-            let statsMatch =
-              /floor|cutoff|roll|DHR|Distinction|Median|Average/i;
-            statName = $(this)
-              .text()
-              .replace("Distinguished Honor Roll", "DHR")
-              .replace("Honor roll", "Honor Roll");
+            let statsMatch = /floor|cutoff|roll|DHR|Distinction|Median|Average/i;
+            statName = $(this).text().replace("Distinguished Honor Roll", "DHR").replace("Honor roll", "Honor Roll");
             if (statsMatch.test(statName)) {
               statsList.push(statName);
             }
           });
         statsList = statsList.filter((e) => /\d/.test(e));
-        $("#amc-stats").html(
-          `${statsList.join(
-            ", "
-          )} <a href="?page=AMC_historical_results">(link)</a>`
-        );
+        $("#amc-stats").html(`${statsList.join(", ")} <a href="?page=AMC_historical_results">(link)</a>`);
       }
     });
   }
@@ -1133,27 +1015,14 @@
   async function getPages() {
     function addPagesFromArray(members) {
       for (let problem of members) {
-        if (
-          matchesOptions(problem, tests, yearsFrom, yearsTo, diffFrom, diffTo)
-        )
-          pages.push(problem);
+        if (matchesOptions(problem, tests, yearsFrom, yearsTo, diffFrom, diffTo)) pages.push(problem);
       }
     }
 
     function addPagesFromJSON(members) {
       for (let problem of members) {
         if (validProblem(problem.title)) {
-          if (
-            matchesOptions(
-              problem.title,
-              tests,
-              yearsFrom,
-              yearsTo,
-              diffFrom,
-              diffTo
-            )
-          )
-            pages.push(problem.title);
+          if (matchesOptions(problem.title, tests, yearsFrom, yearsTo, diffFrom, diffTo)) pages.push(problem.title);
           fullPages.push(problem.title);
         }
       }
@@ -1181,26 +1050,21 @@
       tests[0] = "(All Tests)";
     }
 
+    console.log("getPages", subjects, tests, yearsFrom, yearsTo, diffFrom, diffTo);
+
     if (subjects.includes("(All Subjects)")) {
       for (let problem of allProblems) {
-        if (
-          matchesOptions(problem, tests, yearsFrom, yearsTo, diffFrom, diffTo)
-        )
-          pages.push(problem);
+        if (matchesOptions(problem, tests, yearsFrom, yearsTo, diffFrom, diffTo)) pages.push(problem);
       }
     } else {
       for (let subject of subjects) {
         if (categoryPages.some((e) => e.subject === subject)) {
-          addPagesFromArray(
-            categoryPages.find((e) => e.subject === subject).pages
-          );
+          addPagesFromArray(categoryPages.find((e) => e.subject === subject).pages);
         } else {
           console.log(`Loading category ${subject}...`);
           let apiEndpoint = "https://artofproblemsolving.com/wiki/api.php";
           let pagename = subject;
-          let params =
-            `action=query&list=categorymembers` +
-            `&cmtitle=Category:${pagename}&cmlimit=max&format=json`;
+          let params = `action=query&list=categorymembers` + `&cmtitle=Category:${pagename}&cmlimit=max&format=json`;
           let paramsContinue;
 
           let response = await fetch(`${apiEndpoint}?${params}&origin=*`);
@@ -1209,11 +1073,8 @@
           if (json.query.categorymembers?.[0]) {
             addPagesFromJSON(json.query.categorymembers);
             while (json?.continue) {
-              paramsContinue =
-                params + `&cmcontinue=${json.continue.cmcontinue}`;
-              response = await fetch(
-                `${apiEndpoint}?${paramsContinue}&origin=*`
-              );
+              paramsContinue = params + `&cmcontinue=${json.continue.cmcontinue}`;
+              response = await fetch(`${apiEndpoint}?${paramsContinue}&origin=*`);
               json = await response.json();
               addPagesFromJSON(json.query.categorymembers);
             }
@@ -1224,55 +1085,33 @@
       }
     }
     pages = [...new Set(pages)];
+
     return pages;
   }
 
-  function matchesOptions(
-    problem,
-    tests,
-    yearsFrom,
-    yearsTo,
-    diffFrom,
-    diffTo
-  ) {
+  function matchesOptions(problem, tests, yearsFrom, yearsTo, diffFrom, diffTo) {
+    console.log("matchesOptions", problem, tests, yearsFrom, yearsTo, diffFrom, diffTo);
     if (!/^\d{4}.*Problems\/Problem \d+$/.test(problem)) return false;
 
     let problemTest = computeTest(problem);
 
     if (tests.includes("(AMC Tests)")) {
-      tests.splice(
-        tests.indexOf("(AMC Tests)"),
-        1,
-        "AHSME",
-        "AMC 8",
-        "AMC 10",
-        "AMC 12",
-        "AIME",
-        "USAMO",
-        "IMO"
-      );
+      tests.splice(tests.indexOf("(AMC Tests)"), 1, "AHSME", "AMC 8", "AMC 10", "AMC 12", "AIME", "USAMO", "IMO");
     }
-    if (!tests.includes("(All Tests)") && !tests.includes(problemTest))
-      return false;
+    if (!tests.includes("(All Tests)") && !tests.includes(problemTest)) return false;
 
     let problemYear = computeYear(problem);
     if (problemYear < yearsFrom || yearsTo < problemYear) return false;
 
     let problemNumber = computeNumber(problem);
-    let problemDiff = computeDifficulty(
-      problemTest,
-      problemNumber,
-      problemYear
-    );
+    let problemDiff = computeDifficulty(problemTest, problemNumber, problemYear);
     if (problemDiff < diffFrom || diffTo < problemDiff) return false;
 
     return true;
   }
 
   const validProblem = (problem) =>
-    problem.includes("Problems/Problem") &&
-    problem.match(/^\d{4}/) &&
-    problem.match(/\d+$/);
+    problem.includes("Problems/Problem") && problem.match(/^\d{4}/) && problem.match(/\d+$/);
 
   const computeTest = (problem) =>
     problem
@@ -1284,6 +1123,7 @@
   const computeNumber = (problem) => problem.match(/\d+$/)[0];
 
   function computeDifficulty(test, num, year) {
+    console.log("computeDifficulty", test, num, year);
     let diff;
     switch (test) {
       case "AMC 8":
@@ -1413,25 +1253,16 @@
         diff = num < 4 ? 3 : num < 7 ? 3.5 : num < 10 ? 4 : num < 13 ? 4.5 : 5;
         break;
       case "APMO":
-        diff =
-          num == 1 ? 6 : num == 2 ? 6.5 : num == 3 ? 7 : num == 4 ? 7.5 : 8.5;
+        diff = num == 1 ? 6 : num == 2 ? 6.5 : num == 3 ? 7 : num == 4 ? 7.5 : 8.5;
         break;
       case "BMO":
         diff = num == 1 ? 6 : num == 2 ? 6.5 : num == 3 ? 7.5 : 8;
         break;
       case "Canadian MO":
-        diff =
-          num == 1 ? 5.5 : num == 2 ? 6 : num == 3 ? 6.5 : num == 4 ? 7 : 7.5;
+        diff = num == 1 ? 5.5 : num == 2 ? 6 : num == 3 ? 6.5 : num == 4 ? 7 : 7.5;
         break;
       case "Indonesia MO":
-        diff =
-          num == 1 || num == 5
-            ? 3.5
-            : num == 2 || num == 6
-            ? 4.5
-            : num == 3 || num == 7
-            ? 5
-            : 6;
+        diff = num == 1 || num == 5 ? 3.5 : num == 2 || num == 6 ? 4.5 : num == 3 || num == 7 ? 5 : 6;
         break;
       case "iTest":
         switch (year) {
@@ -1486,22 +1317,10 @@
         diff = num == 1 ? 4 : num == 2 ? 4.5 : num == 3 ? 5 : 6;
         break;
       case "Putnam":
-        diff =
-          num == 1 ? 7 : num == 2 ? 7.5 : num == 3 ? 8 : num == 4 ? 8.5 : 9;
+        diff = num == 1 ? 7 : num == 2 ? 7.5 : num == 3 ? 8 : num == 4 ? 8.5 : 9;
         break;
       case "UMO":
-        diff =
-          num == 1
-            ? 3
-            : num == 2
-            ? 3.5
-            : num == 3
-            ? 4
-            : num == 4
-            ? 5
-            : num == 5
-            ? 6
-            : 6.5;
+        diff = num == 1 ? 3 : num == 2 ? 3.5 : num == 3 ? 4 : num == 4 ? 5 : num == 5 ? 6 : 6.5;
         break;
       case "UNCO Math Contest II":
         diff =
@@ -1527,21 +1346,7 @@
         break;
       case "UNM-PNM Statewide High School Mathematics Contest II":
         diff =
-          num < 3
-            ? 2
-            : num < 4
-            ? 2.5
-            : num < 5
-            ? 3
-            : num < 6
-            ? 3.5
-            : num < 8
-            ? 4
-            : num < 9
-            ? 4.5
-            : num < 10
-            ? 5
-            : 5.5;
+          num < 3 ? 2 : num < 4 ? 2.5 : num < 5 ? 3 : num < 6 ? 3.5 : num < 8 ? 4 : num < 9 ? 4.5 : num < 10 ? 5 : 5.5;
         break;
       default:
         diff = -1;
@@ -1561,6 +1366,8 @@
 
   // Splits and adds problem parts
   function getProblem(htmlString) {
+    console.log("getProblem", htmlString);
+
     let htmlParsed = $.parseHTML(htmlString);
     let after = $(htmlParsed)
       .children()
@@ -1583,6 +1390,8 @@
   }
 
   function getSolutions(htmlString) {
+    console.log("getSolutions", htmlString);
+
     let htmlParsed = $.parseHTML(htmlString);
     let after = $(htmlParsed)
       .children()
@@ -1603,6 +1412,8 @@
   }
 
   function addProblems(problems, addReplace) {
+    console.log("addProblems", problems, addReplace);
+
     let problemList = problems.map((e) => titleCleanup(e.title)).join(", ");
     $("#batch-text").before(
       `<div class="section-options">
@@ -1624,9 +1435,7 @@
         <h2 class="problem-heading">Problem ${index + 1}
           <span class="source-link">
             (<a class="source-link-a"
-              href="?page=${underscores(problem.title)}">${titleCleanup(
-        problem.title
-      )}</a>)
+              href="?page=${underscores(problem.title)}">${titleCleanup(problem.title)}</a>)
           </span>${addReplace ? replaceButton : ``}
         </h2>${problem.problem}
       </div>`);
@@ -1637,9 +1446,7 @@
           Problem ${index + 1}
           <span class="source-link">
             (<a class="source-link-a"
-              href="?page=${underscores(problem.title)}">${titleCleanup(
-        problem.title
-      )}</a>)
+              href="?page=${underscores(problem.title)}">${titleCleanup(problem.title)}</a>)
           </span>
         </h2>${problem.problem}
         <div class="solutions-divider">Solution</div>
@@ -1650,11 +1457,7 @@
 
   // Formatting
   const sanitize = (string) =>
-    string
-      .replace(/&/g, "&amp;")
-      .replace(/"/g, "&quot;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    string.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   const formatLatex = (string) =>
     string
@@ -1679,22 +1482,15 @@
       .replace(/\\textdollar/g, "\\$");
 
   const titleCleanup = (string) =>
-    decodeURIComponent(string)
-      .replace(/_/g, " ")
-      .replace("Problems/Problem ", "#")
-      .replace(/'/g, "’");
-  const underscores = (string) =>
-    string.replace(/ /g, "_").replace(/%2F/g, "/");
+    decodeURIComponent(string).replace(/_/g, " ").replace("Problems/Problem ", "#").replace(/'/g, "’");
+  const underscores = (string) => string.replace(/ /g, "_").replace(/%2F/g, "/");
   const capitalize = (string) => {
     if (typeof string !== "string") return "";
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
   const latexer = (html) => {
-    html = html.replace(
-      /<pre>\s+?(.*?)<\/pre>/gs,
-      "<p style='white-space: pre-line;'>$1</p>"
-    );
+    html = html.replace(/<pre>\s+?(.*?)<\/pre>/gs, "<p style='white-space: pre-line;'>$1</p>");
 
     let images = html.match(/<img (?:.*?) class="latex\w*?" (?:.*?)>/g);
     images = [...new Set(images)];
@@ -1710,8 +1506,7 @@
           });
           html = html.replaceAll(
             image,
-            `<span class="fallback-container">$&</span>` +
-              `<katex class="katex-container">${renderedLatex}</katex>`
+            `<span class="fallback-container">$&</span>` + `<katex class="katex-container">${renderedLatex}</katex>`
           );
         }
       }
@@ -1903,8 +1698,7 @@
       step: 0.5,
     });
 
-    if (!JSON.parse(localStorage.getItem("autogenOff")))
-      $("#random-button").click();
+    if (!JSON.parse(localStorage.getItem("autogenOff"))) $("#random-button").click();
   });
 
   $(".page-container").on("click", "#amc8-single", () => {
@@ -1996,10 +1790,7 @@
 
   $(".page-container").on("click", "#batch-nav", () => {
     let optionsUncollapsed;
-    if (
-      $(".options-container").length &&
-      !$(".options-container").hasClass("text-collapsed")
-    )
+    if ($(".options-container").length && !$(".options-container").hasClass("text-collapsed"))
       optionsUncollapsed = true;
 
     clearOptions();
@@ -2032,8 +1823,7 @@
     );
     $("#sort-container").remove();
     $("#input-hide").prop("checked", true);
-    if (optionsUncollapsed)
-      $(".options-container").removeClass("text-collapsed");
+    if (optionsUncollapsed) $(".options-container").removeClass("text-collapsed");
     updateYear();
     collapseText();
     directLinks();
@@ -2062,10 +1852,7 @@
 
   $(".page-container").on("click", "#problems-nav", () => {
     let optionsUncollapsed;
-    if (
-      $(".options-container").length &&
-      !$(".options-container").hasClass("text-collapsed")
-    )
+    if ($(".options-container").length && !$(".options-container").hasClass("text-collapsed"))
       optionsUncollapsed = true;
 
     clearOptions();
@@ -2085,8 +1872,7 @@
       ${moreOptions}
       ${notes}`
     );
-    if (optionsUncollapsed)
-      $(".options-container").removeClass("text-collapsed");
+    if (optionsUncollapsed) $(".options-container").removeClass("text-collapsed");
     collapseText();
     directLinks();
     nameLive();
@@ -2103,10 +1889,7 @@
 
   $(".page-container").on("click", "#ranbatch-nav", () => {
     let optionsUncollapsed;
-    if (
-      $(".options-container").length &&
-      !$(".options-container").hasClass("text-collapsed")
-    )
+    if ($(".options-container").length && !$(".options-container").hasClass("text-collapsed"))
       optionsUncollapsed = true;
 
     clearOptions();
@@ -2129,8 +1912,7 @@
       ${difficultyChart}
       ${notes}`
     );
-    if (optionsUncollapsed)
-      $(".options-container").removeClass("text-collapsed");
+    if (optionsUncollapsed) $(".options-container").removeClass("text-collapsed");
     $("#more-options").append(`${yearFullOption}
       <input class="input-field input-flex-full" id="input-problems"
       type="text" placeholder="Problems to always include (paste lists here!)"
@@ -2205,8 +1987,7 @@
       from: 5,
     });
 
-    if (!JSON.parse(localStorage.getItem("autogenOff")))
-      $("#ranbatch-button").click();
+    if (!JSON.parse(localStorage.getItem("autogenOff"))) $("#ranbatch-button").click();
   });
 
   $(".page-container").on("click", "#search-nav", () => {
@@ -2253,16 +2034,9 @@
     clearProblem();
 
     if (
-      !(
-        $("#input-singletest").val() + $("#input-singlever").val() in
-        validYears
-      ) ||
-      $("#input-singleyear").val() <
-        validYears[$("#input-singletest").val() + $("#input-singlever").val()]
-          .min ||
-      $("#input-singleyear").val() >
-        validYears[$("#input-singletest").val() + $("#input-singlever").val()]
-          .max
+      !($("#input-singletest").val() + $("#input-singlever").val() in validYears) ||
+      $("#input-singleyear").val() < validYears[$("#input-singletest").val() + $("#input-singlever").val()].min ||
+      $("#input-singleyear").val() > validYears[$("#input-singletest").val() + $("#input-singlever").val()].max
     ) {
       $(".notes").before(
         `<div class="problem-section">
@@ -2289,9 +2063,9 @@
       }
       await addProblem(
         sanitize(
-          `${$("#input-singleyear").val()} ${preTest}${$(
-            "#input-singletest"
-          ).val()}${postTest} Problems/Problem ${$("#input-singlenum").val()}`
+          `${$("#input-singleyear").val()} ${preTest}${$("#input-singletest").val()}${postTest} Problems/Problem ${$(
+            "#input-singlenum"
+          ).val()}`
         ),
         true
       );
@@ -2299,6 +2073,8 @@
   });
 
   $(".page-container").on("click", "#random-button", async () => {
+    console.log("amc12-single");
+
     clickedTimes++;
     let clickedTimesThen = clickedTimes;
     answerTimes = 0;
@@ -2319,17 +2095,12 @@
     } else {
       let invalid = true;
       let response = true;
-      while (
-        invalid &&
-        clickedTimes === clickedTimesThen + answerTimes &&
-        answerTimes < 3
-      ) {
+      while (invalid && clickedTimes === clickedTimesThen + answerTimes && answerTimes < 3) {
         clearProblem();
 
         let randomPage = pages[Math.floor(Math.random() * pages.length)];
         console.log(randomPage);
-        if (clickedTimes === clickedTimesThen + answerTimes)
-          response = await addProblem(randomPage, true);
+        if (clickedTimes === clickedTimesThen + answerTimes) response = await addProblem(randomPage, true);
         invalid = !response;
       }
     }
@@ -2339,11 +2110,7 @@
     async function makeBatch(fullTest) {
       console.log(fullTest);
       let problemTitles = sortProblems(allProblems).filter((e) =>
-        e.includes(
-          sanitize(
-            `${$("#input-singleyear").val()} ${fullTest} Problems/Problem `
-          )
-        )
+        e.includes(sanitize(`${$("#input-singleyear").val()} ${fullTest} Problems/Problem `))
       );
       let redirList = [];
       let redirIndex = [];
@@ -2359,17 +2126,11 @@
         </div>`
       );
 
-      let paramsList = problemTitles.map(
-        (currentProblem) => `action=parse&page=${currentProblem}&format=json`
-      );
+      let paramsList = problemTitles.map((currentProblem) => `action=parse&page=${currentProblem}&format=json`);
       console.log(paramsList);
-      let responseList = await Promise.all(
-        paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-      );
+      let responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
       console.log(responseList);
-      let jsonList = await Promise.all(
-        responseList.map((response) => response.json())
-      );
+      let jsonList = await Promise.all(responseList.map((response) => response.json()));
       console.log(jsonList);
 
       for (let [index, currentProblem] of problemTitles.entries()) {
@@ -2391,37 +2152,24 @@
         } else if (problemText.includes("Redirect to:")) {
           console.log("Redirect problem, going there instead...");
 
-          let redirHref = $($.parseHTML(problemText))
-            .find(".redirectText a")
-            .attr("href");
-          let redirPage = redirHref
-            .replace("/wiki/index.php/", "")
-            .replace(/_/g, " ");
+          let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+          let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
           console.log(redirPage);
           redirList.push(redirPage);
           redirIndex.push(index);
 
-          $(".loading-bar").css(
-            "width",
-            `${(problems.length / numProblems) * 100}%`
-          );
+          $(".loading-bar").css("width", `${(problems.length / numProblems) * 100}%`);
         } else {
           console.log("Invalid problem, skipping...");
         }
       }
 
       if (redirList[0]) {
-        paramsList = redirList.map(
-          (redirPage) => `action=parse&page=${redirPage}&format=json`
-        );
+        paramsList = redirList.map((redirPage) => `action=parse&page=${redirPage}&format=json`);
         console.log(paramsList);
-        responseList = await Promise.all(
-          paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-        );
+        responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
         console.log(responseList);
-        jsonList = await Promise.all(
-          responseList.map((response) => response.json())
-        );
+        jsonList = await Promise.all(responseList.map((response) => response.json()));
         console.log(jsonList);
 
         for (let [index, currentProblem] of redirList.entries()) {
@@ -2475,16 +2223,9 @@
       $("#batch-header").html("Error");
       $("#solutions-section").remove();
     } else if (
-      !(
-        $("#input-singletest").val() + $("#input-singlever").val() in
-        validYears
-      ) ||
-      $("#input-singleyear").val() <
-        validYears[$("#input-singletest").val() + $("#input-singlever").val()]
-          .min ||
-      $("#input-singleyear").val() >
-        validYears[$("#input-singletest").val() + $("#input-singlever").val()]
-          .max
+      !($("#input-singletest").val() + $("#input-singlever").val() in validYears) ||
+      $("#input-singleyear").val() < validYears[$("#input-singletest").val() + $("#input-singlever").val()].min ||
+      $("#input-singleyear").val() > validYears[$("#input-singletest").val() + $("#input-singlever").val()].max
     ) {
       $(".article-text").before(
         `<p class="error">
@@ -2532,9 +2273,7 @@
             testname: fullTest,
           },
           name + " - Trivial Math Practice",
-          `?problems=${problems
-            .map((e) => underscores(e.title))
-            .join("|")}&testyear=${$(
+          `?problems=${problems.map((e) => underscores(e.title)).join("|")}&testyear=${$(
             "#input-singleyear"
           ).val()}&testname=${fullTest}`
         );
@@ -2577,17 +2316,11 @@
         </div>`
       );
 
-      let paramsList = problemTitles.map(
-        (currentProblem) => `action=parse&page=${currentProblem}&format=json`
-      );
+      let paramsList = problemTitles.map((currentProblem) => `action=parse&page=${currentProblem}&format=json`);
       console.log(paramsList);
-      let responseList = await Promise.all(
-        paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-      );
+      let responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
       console.log(responseList);
-      let jsonList = await Promise.all(
-        responseList.map((response) => response.json())
-      );
+      let jsonList = await Promise.all(responseList.map((response) => response.json()));
       console.log(jsonList);
 
       for (let [index, currentProblem] of problemTitles.entries()) {
@@ -2607,27 +2340,17 @@
             solutions: problemSolutions,
           });
 
-          $(".loading-bar").css(
-            "width",
-            `${((problems.length + invalidProblems) / numProblems) * 100}%`
-          );
+          $(".loading-bar").css("width", `${((problems.length + invalidProblems) / numProblems) * 100}%`);
         } else if (problemText.includes("Redirect to:")) {
           console.log("Redirect problem, going there instead...");
 
-          let redirHref = $($.parseHTML(problemText))
-            .find(".redirectText a")
-            .attr("href");
-          let redirPage = redirHref
-            .replace("/wiki/index.php/", "")
-            .replace(/_/g, " ");
+          let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+          let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
           console.log(redirPage);
           redirList.push(redirPage);
           redirIndex.push(index);
 
-          $(".loading-bar").css(
-            "width",
-            `${((problems.length + invalidProblems) / numProblems) * 100}%`
-          );
+          $(".loading-bar").css("width", `${((problems.length + invalidProblems) / numProblems) * 100}%`);
         } else {
           console.log("Invalid problem, skipping...");
           invalidProblems++;
@@ -2635,17 +2358,11 @@
       }
 
       if (redirList[0]) {
-        paramsList = redirList.map(
-          (redirPage) => `action=parse&page=${redirPage}&format=json`
-        );
+        paramsList = redirList.map((redirPage) => `action=parse&page=${redirPage}&format=json`);
         console.log(paramsList);
-        responseList = await Promise.all(
-          paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-        );
+        responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
         console.log(responseList);
-        jsonList = await Promise.all(
-          responseList.map((response) => response.json())
-        );
+        jsonList = await Promise.all(responseList.map((response) => response.json()));
         console.log(jsonList);
 
         for (let [index, currentProblem] of redirList.entries()) {
@@ -2667,8 +2384,7 @@
       }
 
       if (clickedTimes === clickedTimesThen) {
-        if ($("#input-sort").prop("checked"))
-          problems.sort((a, b) => a.difficulty - b.difficulty);
+        if ($("#input-sort").prop("checked")) problems.sort((a, b) => a.difficulty - b.difficulty);
 
         addHistoryBatch(
           problems.map((e) => e.title),
@@ -2759,17 +2475,11 @@
         );
 
       if (inputProblems.val()) {
-        let paramsList = problemTitles.map(
-          (currentProblem) => `action=parse&page=${currentProblem}&format=json`
-        );
+        let paramsList = problemTitles.map((currentProblem) => `action=parse&page=${currentProblem}&format=json`);
         console.log(paramsList);
-        let responseList = await Promise.all(
-          paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-        );
+        let responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
         console.log(responseList);
-        let jsonList = await Promise.all(
-          responseList.map((response) => response.json())
-        );
+        let jsonList = await Promise.all(responseList.map((response) => response.json()));
         console.log(jsonList);
 
         for (let [index, currentProblem] of problemTitles.entries()) {
@@ -2789,27 +2499,17 @@
               solutions: problemSolutions,
             });
 
-            $(".loading-bar").css(
-              "width",
-              `${(problems.length / numProblems) * 100}%`
-            );
+            $(".loading-bar").css("width", `${(problems.length / numProblems) * 100}%`);
           } else if (problemText.includes("Redirect to:")) {
             console.log("Redirect problem, going there instead...");
 
-            let redirHref = $($.parseHTML(problemText))
-              .find(".redirectText a")
-              .attr("href");
-            let redirPage = redirHref
-              .replace("/wiki/index.php/", "")
-              .replace(/_/g, " ");
+            let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+            let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
             console.log(redirPage);
             redirList.push(redirPage);
             redirIndex.push(index);
 
-            $(".loading-bar").css(
-              "width",
-              `${(problems.length / numProblems) * 100}%`
-            );
+            $(".loading-bar").css("width", `${(problems.length / numProblems) * 100}%`);
           } else {
             console.log("Invalid problem, skipping...");
           }
@@ -2833,17 +2533,11 @@
         pages.splice(pageIndex, 1);
       }
 
-      let paramsList = randomList.map(
-        (currentProblem) => `action=parse&page=${currentProblem}&format=json`
-      );
+      let paramsList = randomList.map((currentProblem) => `action=parse&page=${currentProblem}&format=json`);
       console.log(paramsList);
-      let responseList = await Promise.all(
-        paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-      );
+      let responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
       console.log(responseList);
-      let jsonList = await Promise.all(
-        responseList.map((response) => response.json())
-      );
+      let jsonList = await Promise.all(responseList.map((response) => response.json()));
       console.log(jsonList);
 
       for (let [index, randomPage] of randomList.entries()) {
@@ -2854,35 +2548,21 @@
         if (problemProblem && problemSolutions) {
           problems.push({
             title: randomPage,
-            difficulty: computeDifficulty(
-              computeTest(randomPage),
-              computeNumber(randomPage),
-              computeYear(randomPage)
-            ),
+            difficulty: computeDifficulty(computeTest(randomPage), computeNumber(randomPage), computeYear(randomPage)),
             problem: problemProblem,
             solutions: problemSolutions,
           });
 
-          $(".loading-bar").css(
-            "width",
-            `${(problems.length / numProblems) * 100}%`
-          );
+          $(".loading-bar").css("width", `${(problems.length / numProblems) * 100}%`);
         } else if (problemText.includes("Redirect to:")) {
           console.log("Redirect problem, going there instead...");
 
-          let redirHref = $($.parseHTML(problemText))
-            .find(".redirectText a")
-            .attr("href");
-          let redirPage = redirHref
-            .replace("/wiki/index.php/", "")
-            .replace(/_/g, " ");
+          let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+          let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
           console.log(redirPage);
           redirList.push(redirPage);
 
-          $(".loading-bar").css(
-            "width",
-            `${(problems.length / numProblems) * 100}%`
-          );
+          $(".loading-bar").css("width", `${(problems.length / numProblems) * 100}%`);
         } else {
           console.log("Invalid problem, skipping...");
 
@@ -2908,11 +2588,7 @@
 
           problems.push({
             title: randomPage,
-            difficulty: computeDifficulty(
-              computeTest(randomPage),
-              computeNumber(randomPage),
-              computeYear(randomPage)
-            ),
+            difficulty: computeDifficulty(computeTest(randomPage), computeNumber(randomPage), computeYear(randomPage)),
             problem: problemProblem,
             solutions: problemSolutions,
           });
@@ -2920,17 +2596,11 @@
       }
 
       if (redirList[0]) {
-        paramsList = redirList.map(
-          (redirPage) => `action=parse&page=${redirPage}&format=json`
-        );
+        paramsList = redirList.map((redirPage) => `action=parse&page=${redirPage}&format=json`);
         console.log(paramsList);
-        responseList = await Promise.all(
-          paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`))
-        );
+        responseList = await Promise.all(paramsList.map((params) => fetch(`${apiEndpoint}?${params}&origin=*`)));
         console.log(responseList);
-        jsonList = await Promise.all(
-          responseList.map((response) => response.json())
-        );
+        jsonList = await Promise.all(responseList.map((response) => response.json()));
         console.log(jsonList);
 
         for (let [index, currentProblem] of redirList.entries()) {
@@ -2964,8 +2634,7 @@
       }
 
       if (clickedTimes === clickedTimesThen) {
-        if ($("#input-sort").prop("checked"))
-          problems.sort((a, b) => a.difficulty - b.difficulty);
+        if ($("#input-sort").prop("checked")) problems.sort((a, b) => a.difficulty - b.difficulty);
 
         addHistoryBatch(
           problems.map((e) => e.title),
@@ -3030,12 +2699,7 @@
   });
 
   $(".page-container").on("click", "#search-button", async () => {
-    async function addResults(
-      originalSearch,
-      search,
-      searchResults,
-      pageExists
-    ) {
+    async function addResults(originalSearch, search, searchResults, pageExists) {
       let resultsNum = searchResults.length;
       let loadedTimes = 0;
 
@@ -3044,21 +2708,16 @@
         $(".results-notice").append(
           ` | <a href="https://artofproblemsolving.com/wiki/index.php/${encodeURIComponent(
             underscores(search)
-          )}">${capitalize(
-            titleCleanup(encodeURIComponent(originalSearch))
-          )}</a> exists on the wiki`
+          )}">${capitalize(titleCleanup(encodeURIComponent(originalSearch)))}</a> exists on the wiki`
         );
 
       for (let i = 0; i < resultsNum && i < 10; i++) addResult();
       loadedTimes++;
       if (searchResults.length)
-        $(".results-container").after(
-          `<button class="text-button" id="load-results">Load more…</button>`
-        );
+        $(".results-container").after(`<button class="text-button" id="load-results">Load more…</button>`);
 
       $("#load-results").click(() => {
-        for (let i = 0; i < resultsNum - loadedTimes * 10 && i < 10; i++)
-          addResult();
+        for (let i = 0; i < resultsNum - loadedTimes * 10 && i < 10; i++) addResult();
         loadedTimes++;
         if (!searchResults.length) $("#load-results").remove();
         fixLinks();
@@ -3080,10 +2739,7 @@
 
     const enterResult = (page) => {
       if (
-        page.snippet.indexOf("#REDIRECT") +
-          page.snippet.indexOf("#redirect") +
-          page.title.indexOf("\ufffd") ===
-          -3 &&
+        page.snippet.indexOf("#REDIRECT") + page.snippet.indexOf("#redirect") + page.title.indexOf("\ufffd") === -3 &&
         (validProblem(page.title) || !$("#input-problemsonly").prop("checked"))
       ) {
         searchResults.push({
@@ -3119,9 +2775,7 @@
     } else {
       let apiEndpoint = "https://artofproblemsolving.com/wiki/api.php";
 
-      let params = `action=parse&page=${encodeURIComponent(
-        underscores(search)
-      )}&format=json`;
+      let params = `action=parse&page=${encodeURIComponent(underscores(search))}&format=json`;
       let response = await fetch(`${apiEndpoint}?${params}&origin=*`);
       let json = await response.json();
       if (json?.parse) pageExists = true;
@@ -3132,8 +2786,7 @@
       response = await fetch(`${apiEndpoint}?${params}&origin=*`);
       json = await response.json();
 
-      if (clickedTimes === clickedTimesThen)
-        for (let page of json.query.search) enterResult(page);
+      if (clickedTimes === clickedTimesThen) for (let page of json.query.search) enterResult(page);
 
       while (json?.continue) {
         let paramsContinue = params + `&sroffset=${json.continue.sroffset}`;
@@ -3148,8 +2801,7 @@
         addSearch();
         await addResults(originalSearch, search, searchResults, pageExists);
 
-        document.title =
-          `Search results for ${originalSearch}` + " - Trivial Math Practice";
+        document.title = `Search results for ${originalSearch}` + " - Trivial Math Practice";
         fixLinks();
         directLinks();
       }
@@ -3160,22 +2812,16 @@
     if (!theoremPages[0]) {
       console.log("Loading theorems...");
       let apiEndpoint = "https://artofproblemsolving.com/wiki/api.php";
-      let params =
-        `action=query&list=categorymembers&cmtitle=Category:Theorems` +
-        `&cmlimit=max&format=json`;
+      let params = `action=query&list=categorymembers&cmtitle=Category:Theorems` + `&cmlimit=max&format=json`;
 
       let response = await fetch(`${apiEndpoint}?${params}&origin=*`);
       let json = await response.json();
 
-      for (let page of json.query.categorymembers)
-        theoremPages.push(page.title);
+      for (let page of json.query.categorymembers) theoremPages.push(page.title);
     }
-    theoremPages = theoremPages.filter(
-      (e) => e !== "H\ufffdlder's Inequality" && e !== "Theorems"
-    );
+    theoremPages = theoremPages.filter((e) => e !== "H\ufffdlder's Inequality" && e !== "Theorems");
 
-    let randomTheorem =
-      theoremPages[Math.floor(Math.random() * theoremPages.length)];
+    let randomTheorem = theoremPages[Math.floor(Math.random() * theoremPages.length)];
     console.log(randomTheorem);
     await addArticle(randomTheorem, true);
   });
@@ -3187,13 +2833,10 @@
       for (let i = 0; i < resultsNum && i < 10; i++) addItem();
       loadedTimes++;
       if (history.length)
-        $(".results-container").after(
-          `<button class="text-button" id="load-results">Load more…</button>`
-        );
+        $(".results-container").after(`<button class="text-button" id="load-results">Load more…</button>`);
 
       $("#load-results").click(() => {
-        for (let i = 0; i < resultsNum - loadedTimes * 10 && i < 10; i++)
-          addItem();
+        for (let i = 0; i < resultsNum - loadedTimes * 10 && i < 10; i++) addItem();
         loadedTimes++;
         if (!history.length) $("#load-results").remove();
         fixLinks();
@@ -3204,10 +2847,7 @@
     const addItem = () => {
       $(".results-container").append(`<div class="result-item">
           <h2 class="result-title">
-            <a class="result-link" href="${history[0].url.replace(
-              "https://artofproblemsolving.com",
-              ""
-            )}">
+            <a class="result-link" href="${history[0].url.replace("https://artofproblemsolving.com", "")}">
               ${history[0].title}
             </a>
           </h2>
@@ -3378,11 +3018,7 @@
             legend: null,
             scale: {
               domain: ["Correct", "Retry", "Incorrect"],
-              range: [
-                "var(--correct-color)",
-                "var(--retry-color)",
-                "var(--wrong-color)",
-              ],
+              range: ["var(--correct-color)", "var(--retry-color)", "var(--wrong-color)"],
             },
             sort: { field: "sortOrder" },
           },
@@ -3440,9 +3076,7 @@
             },
             encoding: {
               text: {
-                value:
-                  (((numCorrect + numRetry) / numAnswered) * 100).toFixed(1) +
-                  "%",
+                value: (((numCorrect + numRetry) / numAnswered) * 100).toFixed(1) + "%",
               },
             },
           },
@@ -3484,6 +3118,7 @@
 
   // Replace problems
   async function replaceProblems(problems) {
+    console.log("replaceProblems", problems);
     $(".replace-problem").click(async function () {
       async function replace() {
         let pageIndex;
@@ -3526,12 +3161,8 @@
           } else if (problemText.includes("Redirect to:")) {
             console.log("Redirect problem, going there instead...");
 
-            let redirHref = $($.parseHTML(problemText))
-              .find(".redirectText a")
-              .attr("href");
-            let redirPage = redirHref
-              .replace("/wiki/index.php/", "")
-              .replace(/_/g, " ");
+            let redirHref = $($.parseHTML(problemText)).find(".redirectText a").attr("href");
+            let redirPage = redirHref.replace("/wiki/index.php/", "").replace(/_/g, " ");
             console.log(redirPage);
 
             params = `action=parse&page=${redirPage}&format=json`;
@@ -3561,62 +3192,45 @@
             if (!pages.length) giveUp = true;
           }
           if (newProblem) {
-            $(`#batch-text .article-problem:nth-child(${replacedIndex})`)
-              .replaceWith(`<div class="article-problem"
+            $(`#batch-text .article-problem:nth-child(${replacedIndex})`).replaceWith(`<div class="article-problem"
                 index="${replacedIndex}" difficulty="${newProblem.difficulty}">
                 <h2 class="problem-heading">Problem ${replacedIndex}
                   <span class="source-link">
                     (<a class="source-link-a"
-                      href="?page=${underscores(
-                        newProblem.title
-                      )}">${titleCleanup(newProblem.title)}</a>)
+                      href="?page=${underscores(newProblem.title)}">${titleCleanup(newProblem.title)}</a>)
                   </span>${replaceButton}
                 </h2>${newProblem.problem}
               </div>`);
 
-            $(`#solutions-text .article-problem:nth-child(${replacedIndex})`)
-              .replaceWith(`<div class="article-problem" 
+            $(`#solutions-text .article-problem:nth-child(${replacedIndex})`).replaceWith(`<div class="article-problem" 
                 index="${replacedIndex}" difficulty="${newProblem.difficulty}">
                 <h2 class="problem-heading">
                   Problem ${replacedIndex}
                   <span class="source-link">
                     (<a class="source-link-a"
-                      href="?page=${underscores(
-                        newProblem.title
-                      )}">${titleCleanup(newProblem.title)}</a>)
+                      href="?page=${underscores(newProblem.title)}">${titleCleanup(newProblem.title)}</a>)
                   </span>
                 </h2>${newProblem.problem}
                 <div class="solutions-divider">Solution</div>
                 ${newProblem.solutions}
               </div>`);
 
-            let problemsList = $("#copy-problems")
-              .attr("data-clipboard-text")
-              .split(", ");
+            let problemsList = $("#copy-problems").attr("data-clipboard-text").split(", ");
             let oldProblemsList = problemsList;
             let origOldProblemsList = oldProblemsList.map((e) =>
               e.replace(/_/g, " ").replace("#", "Problems/Problem ")
             );
             problemsList[replacedIndex - 1] = titleCleanup(newProblem.title);
-            $("#copy-problems").attr(
-              "data-clipboard-text",
-              problemsList.join(", ")
-            );
-            let origProblemsList = problemsList.map((e) =>
-              e.replace(/_/g, " ").replace("#", "Problems/Problem ")
-            );
+            $("#copy-problems").attr("data-clipboard-text", problemsList.join(", "));
+            let origProblemsList = problemsList.map((e) => e.replace(/_/g, " ").replace("#", "Problems/Problem "));
 
             let name = $("#input-name").val();
             let pageHistory = JSON.parse(localStorage.getItem("pageHistory"));
             let historyIndex = pageHistory.findIndex(
-              (e) =>
-                e.url ===
-                `?problems=${underscores(origOldProblemsList.join("|"))}`
+              (e) => e.url === `?problems=${underscores(origOldProblemsList.join("|"))}`
             );
 
-            pageHistory[historyIndex].url = `?problems=${underscores(
-              origProblemsList.join("|")
-            )}`;
+            pageHistory[historyIndex].url = `?problems=${underscores(origProblemsList.join("|"))}`;
             pageHistory[historyIndex].title =
               name ||
               problemsList
@@ -3641,9 +3255,7 @@
             hideLinks();
             breakSets();
 
-            let answersTitle = `${
-              newProblem.title?.split(" Problems/Problem")[0]
-            } Answer Key`;
+            let answersTitle = `${newProblem.title?.split(" Problems/Problem")[0]} Answer Key`;
             params = `action=parse&page=${answersTitle}&format=json`;
             response = await fetch(`${apiEndpoint}?${params}&origin=*`);
             json = await response.json();
@@ -3704,8 +3316,7 @@
               });
 
               if ($(`.answer-box[index=${replacedIndex}]`).length) {
-                $(`.answer-box[index=${replacedIndex}]`)
-                  .replaceWith(`<div class="answer-box" index="${replacedIndex}"
+                $(`.answer-box[index=${replacedIndex}]`).replaceWith(`<div class="answer-box" index="${replacedIndex}"
                     pagename="${newProblem.title}" answer="${answer}">
                     <span class="answer-num">${replacedIndex}</span>
                     <input class="input-field input-batchans" type="text"
@@ -3713,23 +3324,17 @@
                   </div>`);
               } else {
                 let answerIndex = replacedIndex;
-                while (
-                  answerIndex &&
-                  !$(`.answer-box[index=${answerIndex}]`).length
-                )
-                  answerIndex--;
+                while (answerIndex && !$(`.answer-box[index=${answerIndex}]`).length) answerIndex--;
 
                 if (answerIndex !== 0) {
-                  $(`.answer-box[index=${answerIndex}]`)
-                    .after(`<div class="answer-box" index="${replacedIndex}"
+                  $(`.answer-box[index=${answerIndex}]`).after(`<div class="answer-box" index="${replacedIndex}"
                     pagename="${newProblem.title}" answer="${answer}">
                     <span class="answer-num">${replacedIndex}</span>
                     <input class="input-field input-batchans" type="text"
                     placeholder="Enter answer"/>
                   </div>`);
                 } else {
-                  $(".answer-list")
-                    .prepend(`<div class="answer-box" index="${replacedIndex}"
+                  $(".answer-list").prepend(`<div class="answer-box" index="${replacedIndex}"
                     pagename="${newProblem.title}" answer="${answer}">
                     <span class="answer-num">${replacedIndex}</span>
                     <input class="input-field input-batchans" type="text"
@@ -3746,37 +3351,26 @@
       let replacedDifficulty = replacedProblem.attr("difficulty");
 
       let pages = await getPages();
-      pages = pages.filter(
-        (problem) => !problems.map((e) => e.title).includes(problem)
-      );
+      pages = pages.filter((problem) => !problems.map((e) => e.title).includes(problem));
       if ($("#input-sort").prop("checked"))
         pages = pages.filter(
           (problem) =>
-            computeDifficulty(
-              computeTest(problem),
-              computeNumber(problem),
-              computeYear(problem)
-            ) == replacedDifficulty
+            computeDifficulty(computeTest(problem), computeNumber(problem), computeYear(problem)) == replacedDifficulty
         );
 
       console.log(`${pages.length} total problems retrieved.`);
-      if (!pages.length)
-        $(this).replaceWith(
-          `<span class="replace-notice">No replacements found</span>`
-        );
+      if (!pages.length) $(this).replaceWith(`<span class="replace-notice">No replacements found</span>`);
       else {
         await replace();
         console.log(problems);
-        if (!pages.length)
-          $(this).replaceWith(
-            `<span class="replace-notice">No replacements found</span>`
-          );
+        if (!pages.length) $(this).replaceWith(`<span class="replace-notice">No replacements found</span>`);
       }
     });
   }
 
   // Clear things
   function clearProblem() {
+    console.log("clearProblem");
     $(".problem-section").remove();
     $(".display-settings").remove();
     $(".results-container").remove();
@@ -3784,13 +3378,11 @@
   }
 
   function clearOptions() {
+    console.log("clearOptions");
+
     clickedTimes++;
     document.title = "Trivial Math Practice";
-    history.pushState(
-      {},
-      "Trivial Math Practice",
-      location.href.split("?page=")[0].split("?problems=")[0]
-    );
+    history.pushState({}, "Trivial Math Practice", location.href.split("?page=")[0].split("?problems=")[0]);
     lastParam = "";
     $("#difficulty-info").remove();
     $(".options-container").remove();
@@ -3805,6 +3397,8 @@
   }
 
   function clearOptionsWithoutHistory() {
+    console.log("clearOptionsWithoutHistory");
+
     clickedTimes++;
     $("#difficulty-info").remove();
     $(".options-container").remove();
@@ -3819,13 +3413,11 @@
   }
 
   function clearAll() {
+    console.log("clearAll");
+
     clickedTimes++;
     document.title = "Trivial Math Practice";
-    history.pushState(
-      {},
-      "Trivial Math Practice",
-      location.href.split("?page=")[0].split("?problems=")[0]
-    );
+    history.pushState({}, "Trivial Math Practice", location.href.split("?page=")[0].split("?problems=")[0]);
     lastParam = "";
     $("#secondary-button-container").remove();
     $("#difficulty-info").remove();
@@ -3853,6 +3445,7 @@
 
   // Formatting
   function collapseText() {
+    console.log("collapseText");
     $("#notes-header").click(() => {
       $(".notes").toggleClass("text-collapsed");
     });
@@ -3862,14 +3455,14 @@
   }
 
   function customText() {
-    if (JSON.parse(localStorage.getItem("serifFont")))
-      $(".article-text").addClass("serif-text");
+    console.log("customText");
+    if (JSON.parse(localStorage.getItem("serifFont"))) $(".article-text").addClass("serif-text");
 
-    if (JSON.parse(localStorage.getItem("justifyText")))
-      $(".article-text").addClass("justify-text");
+    if (JSON.parse(localStorage.getItem("justifyText"))) $(".article-text").addClass("justify-text");
   }
 
   function changeName() {
+    console.log("changeName");
     let name = $("#input-name").val();
     if (name) {
       $("#batch-header").html(sanitize(name));
@@ -3880,22 +3473,22 @@
   }
 
   function nameLive() {
+    console.log("nameLive");
     $("#input-name").change(() => {
       changeName();
     });
   }
 
   function katexFallback() {
+    console.log("katexFallback");
     $(".katex-error, .text[style='color:#cc0000;']").each(function () {
       $(this).closest(".katex-container").addClass("katex-broken");
-      $(this)
-        .closest(".katex-container")
-        .prev(".fallback-container")
-        .addClass("fallback-live");
+      $(this).closest(".katex-container").prev(".fallback-container").addClass("fallback-live");
     });
   }
 
   function fixLinks() {
+    console.log("fixLinks");
     $("a").each(function () {
       let href = $(this).attr("href")?.split("#")[0];
       if (href && /^\/wiki\/index\.php\//.test(href)) {
@@ -3905,10 +3498,7 @@
         });
       } else if (href && /^\/wiki\/index\.php/.test(href)) {
         $(this).attr({
-          href: href.replace(
-            "/wiki/index.php",
-            "https://artofproblemsolving.com/wiki/index.php"
-          ),
+          href: href.replace("/wiki/index.php", "https://artofproblemsolving.com/wiki/index.php"),
           title: "",
         });
       }
@@ -3920,23 +3510,16 @@
   }
 
   async function directLinks() {
+    console.log("directLinks");
+
     $("a:not(#aops-wiki-link):not(.aops-link):not(.new)").off("click");
-    $("a:not(#aops-wiki-link):not(.aops-link):not(.new)").click(async function (
-      event
-    ) {
+    $("a:not(#aops-wiki-link):not(.aops-link):not(.new)").click(async function (event) {
       let href = $(this).attr("href");
-      if (
-        href &&
-        (href.includes("artofproblemsolving.com/wiki/") ||
-          href.includes("?page="))
-      ) {
+      if (href && (href.includes("artofproblemsolving.com/wiki/") || href.includes("?page="))) {
         event.preventDefault();
         let pagename = decodeURIComponent(
           href
-            .replace(
-              /^https?:\/\/(www\.)?artofproblemsolving\.com\/wiki\/index\.php\//,
-              ""
-            )
+            .replace(/^https?:\/\/(www\.)?artofproblemsolving\.com\/wiki\/index\.php\//, "")
             .replace(/^\?page=/, "")
             .replace(/_/g, " ")
             .replace(/%/g, "%25")
@@ -3950,18 +3533,21 @@
   }
 
   function hideLinks() {
-    if ($("#input-hide").prop("checked"))
-      $("#batch-text .source-link").addClass("source-link-hidden");
+    console.log("hideLinks");
+
+    if ($("#input-hide").prop("checked")) $("#batch-text .source-link").addClass("source-link-hidden");
     else $("#batch-text .source-link").removeClass("source-link-hidden");
   }
 
   function hideToggle() {
+    console.log("hideToggle");
     $("#input-hide").change(() => {
       $("#batch-text .source-link").toggleClass("source-link-hidden");
     });
   }
 
   function collapseSolutions() {
+    console.log("collapseSolutions");
     $("#solutions-header").off("click");
     $("#solutions-header").click(() => {
       $("#solutions-section").toggleClass("section-collapsed");
@@ -3983,9 +3569,7 @@
             "flex-grow",
             parseInt($(".question-bar.wrong-questions").css("flex-grow")) + 1
           );
-          $("#wrong-num").text(
-            parseInt($(".question-bar.wrong-questions").css("flex-grow"))
-          );
+          $("#wrong-num").text(parseInt($(".question-bar.wrong-questions").css("flex-grow")));
         } else {
           streakCount = 0;
           $("#streak-num").text(streakCount);
@@ -3995,15 +3579,15 @@
             "flex-grow",
             parseInt($(".question-bar.blank-questions").css("flex-grow")) + 1
           );
-          $("#blank-num").text(
-            parseInt($(".question-bar.blank-questions").css("flex-grow"))
-          );
+          $("#blank-num").text(parseInt($(".question-bar.blank-questions").css("flex-grow")));
         }
       }
     });
   }
 
   function displaySettings() {
+    console.log("displaySettings");
+
     if (JSON.parse(localStorage.getItem("serifFont"))) {
       $("#serif-toggle").text("Serif font");
     }
@@ -4102,6 +3686,7 @@
   }
 
   function breakSets() {
+    console.log("breakSets");
     let breakNum = $("#input-break").val();
     if (breakNum) {
       $(`.article-problem`).css("break-after", "");
@@ -4110,6 +3695,7 @@
   }
 
   function breakLive() {
+    console.log("breakLive");
     $("#input-break").change(() => {
       breakSets();
     });
@@ -4117,13 +3703,14 @@
 
   // Update options
   function updateYear() {
+    console.log("updateYear");
+
     $("#input-singletest, #input-singlever").off("change");
     $("#input-singletest").change(function () {
       let testName = $("#input-singletest").val();
       if (testName in validVersions) {
         $("#input-singlever").data("tagify").setDisabled(false);
-        $("#input-singlever").data("tagify").whitelist =
-          validVersions[testName];
+        $("#input-singlever").data("tagify").whitelist = validVersions[testName];
       } else {
         $("#input-singlever").data("tagify").removeAllTags();
         $("#input-singlever").data("tagify").setDisabled(true);
@@ -4149,6 +3736,8 @@
 
   // Insert chart
   function renderChart() {
+    console.log("renderChart");
+
     const options = {
       $schema: "https://vega.github.io/schema/vega-lite/v5.json",
 
@@ -4255,6 +3844,8 @@
 
   // Enter pages into history
   function addHistory(page, snippet) {
+    console.log("addHistory", page, snippet);
+
     let history = JSON.parse(localStorage.getItem("pageHistory"));
     let url = `?page=${underscores(page)}`;
     let cleanedPage = titleCleanup(page);
@@ -4281,10 +3872,11 @@
   }
 
   function addHistoryBatch(problems, snippet, title, testYear, testName) {
+    console.log("addHistoryBatch", problems, snippet, title, testYear, testName);
+
     let history = JSON.parse(localStorage.getItem("pageHistory"));
     let url =
-      `?problems=${underscores(problems.join("|"))}` +
-      (testYear ? `&testyear=${testYear}&testname=${testName}` : ``);
+      `?problems=${underscores(problems.join("|"))}` + (testYear ? `&testyear=${testYear}&testname=${testName}` : ``);
     let cleanedPage =
       title ||
       problems
@@ -4335,12 +3927,11 @@
       let newProblems = event.state?.problems;
       let newTestYear = event.state?.testyear;
       let newTestName = event.state?.testname;
-      console.log(newProblems);
+      console.log("newProblems:", newProblems);
 
       if (newPagename && newPagename !== searchParams.get("page")) {
         if (!$(".notes").length) {
-          if (!$("#secondary-button-container").length)
-            $("#main-button-container").after(`${notes}`);
+          if (!$("#secondary-button-container").length) $("#main-button-container").after(`${notes}`);
           else $("#secondary-button-container").after(`${notes}`);
           collapseText();
         }
